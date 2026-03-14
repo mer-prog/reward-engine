@@ -32,3 +32,46 @@ model Session {
   refreshToken        String?
   refreshTokenExpires DateTime?
 }
+
+model WebhookQueue {
+  id          String    @id @default(cuid())
+  shop        String
+  orderId     String
+  payload     String
+  status      String    @default("pending") // pending | processing | completed | failed | dead
+  retryCount  Int       @default(0)
+  errorMsg    String?
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([shop, orderId])
+  @@index([status, createdAt])
+}
+
+model RewardRule {
+  id         String    @id @default(cuid())
+  shop       String
+  name       String
+  isActive   Boolean   @default(true)
+  conditions String    // JSON (Condition[])
+  action     String    // JSON (Action)
+  usageLimit Int?
+  usageCount Int       @default(0)
+  validFrom  DateTime?
+  validUntil DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  logs       RewardLog[]
+}
+
+model RewardLog {
+  id           String     @id @default(cuid())
+  ruleId       String
+  rule         RewardRule @relation(fields: [ruleId], references: [id])
+  shop         String
+  customerId   String
+  orderId      String
+  discountCode String?
+  actionType   String
+  createdAt    DateTime   @default(now())
+}
