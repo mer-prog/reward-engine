@@ -20,6 +20,7 @@ import {
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import type { Condition, ConditionType, ActionType, Action } from "../services/types";
+import { useTranslation } from "../i18n/i18nContext";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -69,48 +70,25 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   return redirect("/app");
 };
 
-const CONDITION_TYPES: { value: ConditionType; label: string }[] = [
-  { value: "order_total_above", label: "Order total above" },
-  { value: "order_count_equals", label: "Order count equals" },
-  { value: "order_contains_collection", label: "Order contains collection" },
-  { value: "order_item_quantity_above", label: "Item quantity above" },
-];
-
-const ACTION_TYPES: { value: ActionType; label: string }[] = [
-  { value: "percentage_discount", label: "Percentage discount" },
-  { value: "fixed_discount", label: "Fixed amount discount" },
-  { value: "free_shipping", label: "Free shipping" },
-];
-
-function conditionValueLabel(type: ConditionType): string {
-  switch (type) {
-    case "order_total_above":
-      return "Amount (e.g. 5000)";
-    case "order_count_equals":
-      return "Order number (e.g. 3)";
-    case "order_contains_collection":
-      return "Collection handle";
-    case "order_item_quantity_above":
-      return "Quantity (e.g. 5)";
-  }
-}
-
-function actionValueLabel(type: ActionType): string {
-  switch (type) {
-    case "percentage_discount":
-      return "Discount % (e.g. 10)";
-    case "fixed_discount":
-      return "Discount amount (e.g. 500)";
-    case "free_shipping":
-      return "";
-  }
-}
-
 export default function EditRule() {
   const { rule } = useLoaderData<typeof loader>();
   const submit = useSubmit();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const { t } = useTranslation();
+
+  const CONDITION_TYPES: { value: ConditionType; label: string }[] = [
+    { value: "order_total_above", label: t("ruleForm.conditionTypes.order_total_above") },
+    { value: "order_count_equals", label: t("ruleForm.conditionTypes.order_count_equals") },
+    { value: "order_contains_collection", label: t("ruleForm.conditionTypes.order_contains_collection") },
+    { value: "order_item_quantity_above", label: t("ruleForm.conditionTypes.order_item_quantity_above") },
+  ];
+
+  const ACTION_TYPES: { value: ActionType; label: string }[] = [
+    { value: "percentage_discount", label: t("ruleForm.actionTypes.percentage_discount") },
+    { value: "fixed_discount", label: t("ruleForm.actionTypes.fixed_discount") },
+    { value: "free_shipping", label: t("ruleForm.actionTypes.free_shipping") },
+  ];
 
   const parsedConditions: { type: ConditionType; value: string }[] = (() => {
     try {
@@ -205,7 +183,7 @@ export default function EditRule() {
 
   return (
     <Page
-      title="Edit Rule"
+      title={t("ruleForm.editTitle")}
       backAction={{ url: "/app" }}
     >
       <Layout>
@@ -214,10 +192,10 @@ export default function EditRule() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h2" variant="headingMd">
-                  Basic Info
+                  {t("ruleForm.basicInfo")}
                 </Text>
                 <TextField
-                  label="Rule name"
+                  label={t("ruleForm.ruleName")}
                   value={name}
                   onChange={setName}
                   autoComplete="off"
@@ -228,16 +206,16 @@ export default function EditRule() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h2" variant="headingMd">
-                  Conditions (AND)
+                  {t("ruleForm.conditionsAnd")}
                 </Text>
                 <Banner tone="info">
-                  All conditions must be met for the reward to trigger.
+                  {t("ruleForm.conditionsBanner")}
                 </Banner>
                 {conditions.map((condition, index) => (
                   <InlineStack key={index} gap="300" align="start" blockAlign="end">
                     <div style={{ flex: 1 }}>
                       <Select
-                        label="Type"
+                        label={t("ruleForm.conditionTypeLabel")}
                         options={CONDITION_TYPES}
                         value={condition.type}
                         onChange={(val) => updateCondition(index, "type", val)}
@@ -245,7 +223,7 @@ export default function EditRule() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <TextField
-                        label={conditionValueLabel(condition.type)}
+                        label={t(`ruleForm.conditionValueLabels.${condition.type}`)}
                         value={condition.value}
                         onChange={(val) => updateCondition(index, "value", val)}
                         autoComplete="off"
@@ -256,30 +234,30 @@ export default function EditRule() {
                         tone="critical"
                         onClick={() => removeCondition(index)}
                       >
-                        Remove
+                        {t("ruleForm.remove")}
                       </Button>
                     )}
                   </InlineStack>
                 ))}
-                <Button onClick={addCondition}>Add condition</Button>
+                <Button onClick={addCondition}>{t("ruleForm.addCondition")}</Button>
               </BlockStack>
             </Card>
 
             <Card>
               <BlockStack gap="400">
                 <Text as="h2" variant="headingMd">
-                  Action
+                  {t("ruleForm.actionSection")}
                 </Text>
                 <FormLayout>
                   <Select
-                    label="Action type"
+                    label={t("ruleForm.actionTypeLabel")}
                     options={ACTION_TYPES}
                     value={actionType}
                     onChange={(val) => setActionType(val as ActionType)}
                   />
                   {actionType !== "free_shipping" && (
                     <TextField
-                      label={actionValueLabel(actionType)}
+                      label={t(`ruleForm.actionValueLabels.${actionType}`)}
                       value={actionValue}
                       onChange={setActionValue}
                       type="number"
@@ -287,7 +265,7 @@ export default function EditRule() {
                     />
                   )}
                   <TextField
-                    label="Coupon title (optional)"
+                    label={t("ruleForm.couponTitle")}
                     value={actionTitle}
                     onChange={setActionTitle}
                     autoComplete="off"
@@ -299,16 +277,16 @@ export default function EditRule() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h2" variant="headingMd">
-                  Options
+                  {t("ruleForm.options")}
                 </Text>
                 <Checkbox
-                  label="Set usage limit"
+                  label={t("ruleForm.setUsageLimit")}
                   checked={hasUsageLimit}
                   onChange={setHasUsageLimit}
                 />
                 {hasUsageLimit && (
                   <TextField
-                    label="Max usage count"
+                    label={t("ruleForm.maxUsageCount")}
                     value={usageLimit}
                     onChange={setUsageLimit}
                     type="number"
@@ -317,7 +295,7 @@ export default function EditRule() {
                 )}
                 <Divider />
                 <Checkbox
-                  label="Set validity period"
+                  label={t("ruleForm.setValidityPeriod")}
                   checked={hasDateRange}
                   onChange={setHasDateRange}
                 />
@@ -325,7 +303,7 @@ export default function EditRule() {
                   <InlineStack gap="300">
                     <div style={{ flex: 1 }}>
                       <TextField
-                        label="Valid from"
+                        label={t("ruleForm.validFrom")}
                         value={validFrom}
                         onChange={setValidFrom}
                         type="date"
@@ -334,7 +312,7 @@ export default function EditRule() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <TextField
-                        label="Valid until"
+                        label={t("ruleForm.validUntil")}
                         value={validUntil}
                         onChange={setValidUntil}
                         type="date"
@@ -353,7 +331,7 @@ export default function EditRule() {
                 loading={isSubmitting}
                 onClick={handleSubmit}
               >
-                Save Rule
+                {t("ruleForm.saveButton")}
               </Button>
             </InlineStack>
           </BlockStack>

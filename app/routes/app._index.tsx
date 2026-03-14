@@ -17,6 +17,7 @@ import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import type { Condition, Action } from "../services/types";
+import { useTranslation } from "../i18n/i18nContext";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -78,63 +79,64 @@ async function getQueueStats(shop: string) {
   return { pending, failed, dead, recentCompleted };
 }
 
-function summarizeConditions(conditionsJson: string): string {
-  try {
-    const conditions: Condition[] = JSON.parse(conditionsJson);
-    return conditions
-      .map((c) => {
-        switch (c.type) {
-          case "order_total_above":
-            return `${c.value}+ spent`;
-          case "order_count_equals":
-            return `Order #${c.value}`;
-          case "order_contains_collection":
-            return `Collection: ${c.value}`;
-          case "order_item_quantity_above":
-            return `${c.value}+ items`;
-          default:
-            return c.type;
-        }
-      })
-      .join(" AND ");
-  } catch {
-    return "-";
-  }
-}
-
-function summarizeAction(actionJson: string): string {
-  try {
-    const action: Action = JSON.parse(actionJson);
-    switch (action.type) {
-      case "percentage_discount":
-        return `${action.value}% OFF`;
-      case "fixed_discount":
-        return `${action.value} OFF`;
-      case "free_shipping":
-        return "Free Shipping";
-      default:
-        return action.type;
-    }
-  } catch {
-    return "-";
-  }
-}
-
 export default function Dashboard() {
   const { rules, queueStats } = useLoaderData<typeof loader>();
   const submit = useSubmit();
   const navigation = useNavigation();
   const isLoading = navigation.state !== "idle";
+  const { t } = useTranslation();
+
+  function summarizeConditions(conditionsJson: string): string {
+    try {
+      const conditions: Condition[] = JSON.parse(conditionsJson);
+      return conditions
+        .map((c) => {
+          switch (c.type) {
+            case "order_total_above":
+              return t("conditions.spent", { value: c.value });
+            case "order_count_equals":
+              return t("conditions.orderNumber", { value: c.value });
+            case "order_contains_collection":
+              return t("conditions.collection", { value: c.value });
+            case "order_item_quantity_above":
+              return t("conditions.items", { value: c.value });
+            default:
+              return c.type;
+          }
+        })
+        .join(" AND ");
+    } catch {
+      return "-";
+    }
+  }
+
+  function summarizeAction(actionJson: string): string {
+    try {
+      const action: Action = JSON.parse(actionJson);
+      switch (action.type) {
+        case "percentage_discount":
+          return t("actions.percentOff", { value: action.value ?? 0 });
+        case "fixed_discount":
+          return t("actions.fixedOff", { value: action.value ?? 0 });
+        case "free_shipping":
+          return t("actions.freeShipping");
+        default:
+          return action.type;
+      }
+    } catch {
+      return "-";
+    }
+  }
 
   return (
     <Page>
-      <TitleBar title="RewardEngine" />{/* Primary action handled by nav menu */}
+      <TitleBar title={t("dashboard.title")} />
       <BlockStack gap="500">
         <InlineGrid columns={4} gap="400">
           <Card>
             <BlockStack gap="200">
               <Text as="h3" variant="headingSm">
-                Pending
+                {t("dashboard.pending")}
               </Text>
               <Text as="p" variant="headingLg">
                 {queueStats.pending}
@@ -144,7 +146,7 @@ export default function Dashboard() {
           <Card>
             <BlockStack gap="200">
               <Text as="h3" variant="headingSm">
-                Failed
+                {t("dashboard.failed")}
               </Text>
               <Text as="p" variant="headingLg" tone="critical">
                 {queueStats.failed}
@@ -154,7 +156,7 @@ export default function Dashboard() {
           <Card>
             <BlockStack gap="200">
               <Text as="h3" variant="headingSm">
-                Dead
+                {t("dashboard.dead")}
               </Text>
               <Text as="p" variant="headingLg" tone="critical">
                 {queueStats.dead}
@@ -164,7 +166,7 @@ export default function Dashboard() {
           <Card>
             <BlockStack gap="200">
               <Text as="h3" variant="headingSm">
-                Processed (1h)
+                {t("dashboard.processedOneHour")}
               </Text>
               <Text as="p" variant="headingLg" tone="success">
                 {queueStats.recentCompleted}
@@ -178,27 +180,24 @@ export default function Dashboard() {
             <Card padding="0">
               {rules.length === 0 ? (
                 <EmptyState
-                  heading="No reward rules yet"
+                  heading={t("dashboard.emptyHeading")}
                   action={{
-                    content: "Create rule",
+                    content: t("dashboard.createRule"),
                     url: "/app/rules/new",
                   }}
                   image=""
                 >
-                  <p>
-                    Set up conditions and rewards to automatically issue
-                    discount codes to your customers.
-                  </p>
+                  <p>{t("dashboard.emptyDescription")}</p>
                 </EmptyState>
               ) : (
                 <IndexTable
                   itemCount={rules.length}
                   headings={[
-                    { title: "Name" },
-                    { title: "Conditions" },
-                    { title: "Action" },
-                    { title: "Status" },
-                    { title: "Fired" },
+                    { title: t("dashboard.tableHeadingName") },
+                    { title: t("dashboard.tableHeadingConditions") },
+                    { title: t("dashboard.tableHeadingAction") },
+                    { title: t("dashboard.tableHeadingStatus") },
+                    { title: t("dashboard.tableHeadingFired") },
                     { title: "" },
                   ]}
                   selectable={false}
@@ -218,7 +217,9 @@ export default function Dashboard() {
                       </IndexTable.Cell>
                       <IndexTable.Cell>
                         <Badge tone={rule.isActive ? "success" : undefined}>
-                          {rule.isActive ? "Active" : "Inactive"}
+                          {rule.isActive
+                            ? t("dashboard.active")
+                            : t("dashboard.inactive")}
                         </Badge>
                       </IndexTable.Cell>
                       <IndexTable.Cell>{rule._count.logs}</IndexTable.Cell>
@@ -234,7 +235,9 @@ export default function Dashboard() {
                               submit(fd, { method: "post" });
                             }}
                           >
-                            {rule.isActive ? "Disable" : "Enable"}
+                            {rule.isActive
+                              ? t("dashboard.disable")
+                              : t("dashboard.enable")}
                           </Button>
                           <Button
                             size="slim"
@@ -247,7 +250,7 @@ export default function Dashboard() {
                               submit(fd, { method: "post" });
                             }}
                           >
-                            Delete
+                            {t("dashboard.delete")}
                           </Button>
                         </InlineStack>
                       </IndexTable.Cell>

@@ -1,0 +1,125 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "newRule": "New Rule",
+    "activityLog": "Activity Log",
+    "queueMonitor": "Queue Monitor"
+  },
+  "languageToggle": {
+    "label": "Language"
+  },
+  "dashboard": {
+    "title": "RewardEngine",
+    "pending": "Pending",
+    "failed": "Failed",
+    "dead": "Dead",
+    "processedOneHour": "Processed (1h)",
+    "emptyHeading": "No reward rules yet",
+    "emptyDescription": "Set up conditions and rewards to automatically issue discount codes to your customers.",
+    "createRule": "Create rule",
+    "tableHeadingName": "Name",
+    "tableHeadingConditions": "Conditions",
+    "tableHeadingAction": "Action",
+    "tableHeadingStatus": "Status",
+    "tableHeadingFired": "Fired",
+    "active": "Active",
+    "inactive": "Inactive",
+    "enable": "Enable",
+    "disable": "Disable",
+    "delete": "Delete"
+  },
+  "ruleForm": {
+    "createTitle": "Create Rule",
+    "editTitle": "Edit Rule",
+    "basicInfo": "Basic Info",
+    "ruleName": "Rule name",
+    "ruleNamePlaceholder": "e.g. 5000 yen purchase coupon",
+    "conditionsAnd": "Conditions (AND)",
+    "conditionsBanner": "All conditions must be met for the reward to trigger.",
+    "conditionTypeLabel": "Type",
+    "remove": "Remove",
+    "addCondition": "Add condition",
+    "actionSection": "Action",
+    "actionTypeLabel": "Action type",
+    "couponTitle": "Coupon title (optional)",
+    "couponTitlePlaceholder": "e.g. Thank you discount",
+    "options": "Options",
+    "setUsageLimit": "Set usage limit",
+    "maxUsageCount": "Max usage count",
+    "setValidityPeriod": "Set validity period",
+    "validFrom": "Valid from",
+    "validUntil": "Valid until",
+    "createButton": "Create Rule",
+    "saveButton": "Save Rule",
+    "conditionTypes": {
+      "order_total_above": "Order total above",
+      "order_count_equals": "Order count equals",
+      "order_contains_collection": "Order contains collection",
+      "order_item_quantity_above": "Item quantity above"
+    },
+    "conditionValueLabels": {
+      "order_total_above": "Amount (e.g. 5000)",
+      "order_count_equals": "Order number (e.g. 3)",
+      "order_contains_collection": "Collection handle",
+      "order_item_quantity_above": "Quantity (e.g. 5)"
+    },
+    "actionTypes": {
+      "percentage_discount": "Percentage discount",
+      "fixed_discount": "Fixed amount discount",
+      "free_shipping": "Free shipping"
+    },
+    "actionValueLabels": {
+      "percentage_discount": "Discount % (e.g. 10)",
+      "fixed_discount": "Discount amount (e.g. 500)",
+      "free_shipping": ""
+    }
+  },
+  "activity": {
+    "title": "Activity Log",
+    "emptyHeading": "No rewards issued yet",
+    "emptyDescription": "When rules match incoming orders, reward logs will appear here.",
+    "tableDate": "Date",
+    "tableCustomer": "Customer",
+    "tableOrder": "Order",
+    "tableRule": "Rule",
+    "tableAction": "Action",
+    "tableDiscountCode": "Discount Code",
+    "actionLabels": {
+      "percentage_discount": "% Discount",
+      "fixed_discount": "Fixed Discount",
+      "free_shipping": "Free Shipping"
+    }
+  },
+  "queue": {
+    "title": "Queue Monitor",
+    "statusLabel": "Status",
+    "emptyHeading": "No queue items",
+    "emptyFilteredDescription": "No items match the selected filters.",
+    "emptyDescription": "No webhook events have been received yet.",
+    "tableOrderId": "Order ID",
+    "tableStatus": "Status",
+    "tableRetries": "Retries",
+    "tableError": "Error",
+    "tableCreated": "Created",
+    "tableProcessed": "Processed",
+    "retry": "Retry",
+    "statusOptions": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "dead": "Dead"
+    }
+  },
+  "conditions": {
+    "spent": "{value}+ spent",
+    "orderNumber": "Order #{value}",
+    "collection": "Collection: {value}",
+    "items": "{value}+ items"
+  },
+  "actions": {
+    "percentOff": "{value}% OFF",
+    "fixedOff": "{value} OFF",
+    "freeShipping": "Free Shipping"
+  }
+}

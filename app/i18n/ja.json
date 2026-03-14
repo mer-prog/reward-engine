@@ -1,0 +1,125 @@
+{
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "newRule": "新規ルール",
+    "activityLog": "付与ログ",
+    "queueMonitor": "キューモニター"
+  },
+  "languageToggle": {
+    "label": "言語"
+  },
+  "dashboard": {
+    "title": "RewardEngine",
+    "pending": "待機中",
+    "failed": "失敗",
+    "dead": "停止",
+    "processedOneHour": "処理済 (1時間)",
+    "emptyHeading": "ルールがまだありません",
+    "emptyDescription": "条件と特典を設定して、顧客に自動でディスカウントコードを発行しましょう。",
+    "createRule": "ルール作成",
+    "tableHeadingName": "名前",
+    "tableHeadingConditions": "条件",
+    "tableHeadingAction": "アクション",
+    "tableHeadingStatus": "ステータス",
+    "tableHeadingFired": "発動回数",
+    "active": "有効",
+    "inactive": "無効",
+    "enable": "有効にする",
+    "disable": "無効にする",
+    "delete": "削除"
+  },
+  "ruleForm": {
+    "createTitle": "ルール作成",
+    "editTitle": "ルール編集",
+    "basicInfo": "基本情報",
+    "ruleName": "ルール名",
+    "ruleNamePlaceholder": "例: 5000円以上購入クーポン",
+    "conditionsAnd": "条件 (AND)",
+    "conditionsBanner": "すべての条件が満たされた場合に特典が付与されます。",
+    "conditionTypeLabel": "種別",
+    "remove": "削除",
+    "addCondition": "条件を追加",
+    "actionSection": "アクション",
+    "actionTypeLabel": "アクション種別",
+    "couponTitle": "クーポンタイトル（任意）",
+    "couponTitlePlaceholder": "例: ありがとうディスカウント",
+    "options": "オプション",
+    "setUsageLimit": "使用回数制限を設定",
+    "maxUsageCount": "最大使用回数",
+    "setValidityPeriod": "有効期間を設定",
+    "validFrom": "開始日",
+    "validUntil": "終了日",
+    "createButton": "ルールを作成",
+    "saveButton": "ルールを保存",
+    "conditionTypes": {
+      "order_total_above": "注文合計が指定額以上",
+      "order_count_equals": "累計注文回数が指定回数",
+      "order_contains_collection": "特定コレクションの商品を含む",
+      "order_item_quantity_above": "商品数が指定数以上"
+    },
+    "conditionValueLabels": {
+      "order_total_above": "金額（例: 5000）",
+      "order_count_equals": "注文回数（例: 3）",
+      "order_contains_collection": "コレクションハンドル",
+      "order_item_quantity_above": "数量（例: 5）"
+    },
+    "actionTypes": {
+      "percentage_discount": "割引率（%）",
+      "fixed_discount": "定額割引",
+      "free_shipping": "送料無料"
+    },
+    "actionValueLabels": {
+      "percentage_discount": "割引率（例: 10）",
+      "fixed_discount": "割引額（例: 500）",
+      "free_shipping": ""
+    }
+  },
+  "activity": {
+    "title": "付与ログ",
+    "emptyHeading": "まだ特典が付与されていません",
+    "emptyDescription": "注文がルールに一致すると、ここに付与ログが表示されます。",
+    "tableDate": "日時",
+    "tableCustomer": "顧客",
+    "tableOrder": "注文",
+    "tableRule": "ルール",
+    "tableAction": "アクション",
+    "tableDiscountCode": "ディスカウントコード",
+    "actionLabels": {
+      "percentage_discount": "% 割引",
+      "fixed_discount": "定額割引",
+      "free_shipping": "送料無料"
+    }
+  },
+  "queue": {
+    "title": "キューモニター",
+    "statusLabel": "ステータス",
+    "emptyHeading": "キューアイテムなし",
+    "emptyFilteredDescription": "選択したフィルターに一致するアイテムがありません。",
+    "emptyDescription": "まだWebhookイベントを受信していません。",
+    "tableOrderId": "注文ID",
+    "tableStatus": "ステータス",
+    "tableRetries": "リトライ回数",
+    "tableError": "エラー",
+    "tableCreated": "作成日時",
+    "tableProcessed": "処理日時",
+    "retry": "再処理",
+    "statusOptions": {
+      "pending": "待機中",
+      "processing": "処理中",
+      "completed": "完了",
+      "failed": "失敗",
+      "dead": "停止"
+    }
+  },
+  "conditions": {
+    "spent": "{value}円以上",
+    "orderNumber": "注文 #{value}",
+    "collection": "コレクション: {value}",
+    "items": "{value}個以上"
+  },
+  "actions": {
+    "percentOff": "{value}% OFF",
+    "fixedOff": "{value}円 OFF",
+    "freeShipping": "送料無料"
+  }
+}

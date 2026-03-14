@@ -11,6 +11,7 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
+import { useTranslation } from "../i18n/i18nContext";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -24,19 +25,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return { logs };
 };
-
-function actionLabel(type: string): string {
-  switch (type) {
-    case "percentage_discount":
-      return "% Discount";
-    case "fixed_discount":
-      return "Fixed Discount";
-    case "free_shipping":
-      return "Free Shipping";
-    default:
-      return type;
-  }
-}
 
 function actionTone(type: string): "success" | "info" | undefined {
   switch (type) {
@@ -53,29 +41,33 @@ function actionTone(type: string): "success" | "info" | undefined {
 
 export default function ActivityLog() {
   const { logs } = useLoaderData<typeof loader>();
+  const { t } = useTranslation();
+
+  function actionLabel(type: string): string {
+    const key = `activity.actionLabels.${type}` as const;
+    const result = t(key);
+    return result !== key ? result : type;
+  }
 
   return (
-    <Page title="Activity Log" backAction={{ url: "/app" }}>
+    <Page title={t("activity.title")} backAction={{ url: "/app" }}>
       <Layout>
         <Layout.Section>
           <Card padding="0">
             {logs.length === 0 ? (
-              <EmptyState heading="No rewards issued yet" image="">
-                <p>
-                  When rules match incoming orders, reward logs will appear
-                  here.
-                </p>
+              <EmptyState heading={t("activity.emptyHeading")} image="">
+                <p>{t("activity.emptyDescription")}</p>
               </EmptyState>
             ) : (
               <IndexTable
                 itemCount={logs.length}
                 headings={[
-                  { title: "Date" },
-                  { title: "Customer" },
-                  { title: "Order" },
-                  { title: "Rule" },
-                  { title: "Action" },
-                  { title: "Discount Code" },
+                  { title: t("activity.tableDate") },
+                  { title: t("activity.tableCustomer") },
+                  { title: t("activity.tableOrder") },
+                  { title: t("activity.tableRule") },
+                  { title: t("activity.tableAction") },
+                  { title: t("activity.tableDiscountCode") },
                 ]}
                 selectable={false}
               >

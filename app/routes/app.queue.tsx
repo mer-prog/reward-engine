@@ -16,14 +16,7 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
-
-const STATUS_OPTIONS = [
-  { label: "Pending", value: "pending" },
-  { label: "Processing", value: "processing" },
-  { label: "Completed", value: "completed" },
-  { label: "Failed", value: "failed" },
-  { label: "Dead", value: "dead" },
-];
+import { useTranslation } from "../i18n/i18nContext";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -88,6 +81,15 @@ export default function QueueMonitor() {
   const navigation = useNavigation();
   const [searchParams, setSearchParams] = useSearchParams();
   const isLoading = navigation.state !== "idle";
+  const { t } = useTranslation();
+
+  const STATUS_OPTIONS = [
+    { label: t("queue.statusOptions.pending"), value: "pending" },
+    { label: t("queue.statusOptions.processing"), value: "processing" },
+    { label: t("queue.statusOptions.completed"), value: "completed" },
+    { label: t("queue.statusOptions.failed"), value: "failed" },
+    { label: t("queue.statusOptions.dead"), value: "dead" },
+  ];
 
   const selectedStatuses = searchParams.getAll("status");
 
@@ -101,13 +103,19 @@ export default function QueueMonitor() {
     setSearchParams(new URLSearchParams());
   };
 
+  const statusLabel = (status: string): string => {
+    const key = `queue.statusOptions.${status}`;
+    const result = t(key);
+    return result !== key ? result : status;
+  };
+
   const filters = [
     {
       key: "status",
-      label: "Status",
+      label: t("queue.statusLabel"),
       filter: (
         <ChoiceList
-          title="Status"
+          title={t("queue.statusLabel")}
           titleHidden
           choices={STATUS_OPTIONS}
           selected={selectedStatuses}
@@ -123,14 +131,14 @@ export default function QueueMonitor() {
     ? [
         {
           key: "status",
-          label: `Status: ${selectedStatuses.join(", ")}`,
+          label: `${t("queue.statusLabel")}: ${selectedStatuses.map((s) => statusLabel(s)).join(", ")}`,
           onRemove: handleClearAll,
         },
       ]
     : [];
 
   return (
-    <Page title="Queue Monitor" backAction={{ url: "/app" }}>
+    <Page title={t("queue.title")} backAction={{ url: "/app" }}>
       <Layout>
         <Layout.Section>
           <Card padding="0">
@@ -144,23 +152,23 @@ export default function QueueMonitor() {
               hideQueryField
             />
             {items.length === 0 ? (
-              <EmptyState heading="No queue items" image="">
+              <EmptyState heading={t("queue.emptyHeading")} image="">
                 <p>
                   {selectedStatuses.length > 0
-                    ? "No items match the selected filters."
-                    : "No webhook events have been received yet."}
+                    ? t("queue.emptyFilteredDescription")
+                    : t("queue.emptyDescription")}
                 </p>
               </EmptyState>
             ) : (
               <IndexTable
                 itemCount={items.length}
                 headings={[
-                  { title: "Order ID" },
-                  { title: "Status" },
-                  { title: "Retries" },
-                  { title: "Error" },
-                  { title: "Created" },
-                  { title: "Processed" },
+                  { title: t("queue.tableOrderId") },
+                  { title: t("queue.tableStatus") },
+                  { title: t("queue.tableRetries") },
+                  { title: t("queue.tableError") },
+                  { title: t("queue.tableCreated") },
+                  { title: t("queue.tableProcessed") },
                   { title: "" },
                 ]}
                 selectable={false}
@@ -174,7 +182,7 @@ export default function QueueMonitor() {
                     </IndexTable.Cell>
                     <IndexTable.Cell>
                       <Badge tone={statusTone(item.status)}>
-                        {item.status}
+                        {statusLabel(item.status)}
                       </Badge>
                     </IndexTable.Cell>
                     <IndexTable.Cell>{item.retryCount}</IndexTable.Cell>
@@ -203,7 +211,7 @@ export default function QueueMonitor() {
                             submit(fd, { method: "post" });
                           }}
                         >
-                          Retry
+                          {t("queue.retry")}
                         </Button>
                       )}
                     </IndexTable.Cell>
