@@ -128,11 +128,7 @@ export default function Dashboard() {
 
   return (
     <Page>
-      <TitleBar title="RewardEngine">
-        <button variant="primary" url="/app/rules/new">
-          New Rule
-        </button>
-      </TitleBar>
+      <TitleBar title="RewardEngine" />{/* Primary action handled by nav menu */}
       <BlockStack gap="500">
         <InlineGrid columns={4} gap="400">
           <Card>
