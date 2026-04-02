@@ -2,8 +2,6 @@
 
 **A no-code rule engine for automated reward and coupon distribution on Shopify.**
 
-![RewardEngine Screenshot](docs/screenshots/reward-engine-preview.png)
-
 ## Features
 
 - **Visual Rule Builder** — Create reward rules with a no-code UI: combine conditions, set actions, and define validity periods
